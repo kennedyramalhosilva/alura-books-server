@@ -13,6 +13,9 @@ function getLivros(req, res) {
 function getLivro(req, res) {
     try {
         const id = req.params.id;
+        if(id && Number.isNaN(Number(id))) {
+            return res.status(412).send({message: "ID inválido"});
+        }
         const livro = getLivroPorId(id);
         res.send(livro);
     } catch (error) {
@@ -23,8 +26,12 @@ function getLivro(req, res) {
 function postLivro(req, res) {
     try {
         const livroNovo = req.body; 
-        insereLivro(livroNovo);
-        res.status(201).send("Livro inserido com sucesso");
+        if(req.body.nome) {
+            insereLivro(livroNovo);
+            res.status(201).send("Livro inserido com sucesso");
+        } else {
+            res.status(412).send({message: "Nome do livro é obrigatório"});
+        }
     } catch (error) {
         res.status(500).send({message: error.message});
     }       
@@ -33,6 +40,9 @@ function postLivro(req, res) {
 function patchLivro(req, res) {
     try {
         const id = req.params.id;
+        if(id && Number.isNaN(Number(id))) {
+            return res.status(412).send({message: "ID inválido"});
+        }
         const body = req.body;
         modificaLivro(body, id);
         res.status(200).send("Livro atualizado com sucesso");   
@@ -44,6 +54,9 @@ function patchLivro(req, res) {
 function deletarLivro(req, res) {
     try {
         const id = req.params.id;   
+        if(id && Number.isNaN(Number(id))) {
+            return res.status(412).send({message: "ID inválido"});
+        }
         deleteLivro(id);
         res.status(200).send("Livro deletado com sucesso");
     } catch (error) {
